@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 const connectDB = require('./config/database');
 
 // Import routes with error handling
-let adminRoutes, userRoutes, restaurantRoutes, driverRoutes, adminRestaurantRoutes, adminUserRoutes, adminDriverRoutes, restaurantItemRoutes, restaurantCategoryRoutes, restaurantPlanRoutes, restaurantOfferRoutes, orderRoutes;
+let adminRoutes, userRoutes, restaurantRoutes, driverRoutes, adminRestaurantRoutes, adminUserRoutes, adminDriverRoutes, restaurantItemRoutes, restaurantCategoryRoutes, restaurantPlanRoutes, restaurantOfferRoutes, orderRoutes, userPlanRoutes, adminPlanRoutes, adminOfferRoutes, adminItemRoutes, adminCategoryRoutes, adminReviewRoutes, adminOrderRoutes, reviewRoutes;
 
 try {
   adminRoutes = require('./admin/routes/adminRoutes');
@@ -35,6 +35,15 @@ try {
   restaurantOfferRoutes = require('./restaurant/routes/offerRoutes');
   orderRoutes = require('./order/routes/orderRoutes');
   userPlanRoutes = require('./restaurant/routes/userPlanRoutes');
+  reviewRoutes = require('./restaurant/routes/reviewRoutes');
+  
+  // New admin routes
+  adminPlanRoutes = require('./admin/routes/planRoutes');
+  adminOfferRoutes = require('./admin/routes/offerRoutes');
+  adminItemRoutes = require('./admin/routes/itemRoutes');
+  adminCategoryRoutes = require('./admin/routes/categoryRoutes');
+  adminReviewRoutes = require('./admin/routes/reviewRoutes');
+  adminOrderRoutes = require('./admin/routes/orderRoutes');
 } catch (error) {
   console.error('❌ Error loading routes:', error.message);
   process.exit(1);
@@ -48,12 +57,19 @@ app.use('/api/driver', driverRoutes);
 app.use('/api/admin/restaurants', adminRestaurantRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/drivers', adminDriverRoutes);
+app.use('/api/admin/plans', adminPlanRoutes);
+app.use('/api/admin/offers', adminOfferRoutes);
+app.use('/api/admin/items', adminItemRoutes);
+app.use('/api/admin/categories', adminCategoryRoutes);
+app.use('/api/admin/reviews', adminReviewRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/restaurant/items', restaurantItemRoutes);
 app.use('/api/restaurant/categories', restaurantCategoryRoutes);
 app.use('/api/restaurant/plans', restaurantPlanRoutes);
 app.use('/api/restaurant/offers', restaurantOfferRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/user/plans', userPlanRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {

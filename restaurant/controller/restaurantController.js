@@ -858,6 +858,52 @@ const logout = async (req, res) => {
   }
 };
 
+// @desc    Toggle restaurant online/offline status
+// @route   POST /api/restaurant/toggle-online
+// @access  Private
+const toggleOnlineStatus = async (req, res) => {
+  try {
+    console.log('🔄 [TOGGLE_ONLINE] Request received from user:', req.user.id);
+    
+    const restaurant = await Restaurant.findById(req.user.id);
+    
+    if (!restaurant) {
+      console.log('❌ [TOGGLE_ONLINE] Restaurant not found for user ID:', req.user.id);
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found'
+      });
+    }
+
+    console.log('✅ [TOGGLE_ONLINE] Restaurant found:', restaurant._id);
+    console.log('🔄 [TOGGLE_ONLINE] Current online status:', restaurant.isOnline);
+
+    // Toggle online status
+    await restaurant.toggleOnlineStatus();
+    
+    console.log('✅ [TOGGLE_ONLINE] Online status toggled to:', restaurant.isOnline);
+
+    res.status(200).json({
+      success: true,
+      message: `Restaurant is now ${restaurant.isOnline ? 'online' : 'offline'}`,
+      data: {
+        isOnline: restaurant.isOnline,
+        message: restaurant.isOnline 
+          ? 'Your restaurant is now online and visible to customers' 
+          : 'Your restaurant is now offline and not visible to customers'
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ [TOGGLE_ONLINE] Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error toggling online status',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   sendOTP,
   verifyOTP,
@@ -867,5 +913,6 @@ module.exports = {
   getDashboard,
   removeMessImage,
   clearMessImages,
-  logout
+  logout,
+  toggleOnlineStatus
 }; 

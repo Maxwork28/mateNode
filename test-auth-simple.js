@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'https://api.mangiee.com/api';
 
 async function testAuthEndpoint() {
   console.log('🧪 Testing Updated Auth Endpoint (Phone Only)\n');

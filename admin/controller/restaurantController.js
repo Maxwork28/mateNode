@@ -166,25 +166,42 @@ const rejectRestaurant = async (req, res) => {
 const toggleRestaurantStatus = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('🔍 [Backend] Toggle status request for restaurant ID:', id);
 
     const restaurant = await Restaurant.findById(id);
     
     if (!restaurant) {
+      console.log('🔍 [Backend] Restaurant not found');
       return res.status(404).json({
         success: false,
         message: 'Restaurant not found'
       });
     }
 
+    console.log('🔍 [Backend] Found restaurant:', {
+      id: restaurant._id,
+      businessName: restaurant.businessName,
+      isApproved: restaurant.isApproved,
+      isActive: restaurant.isActive,
+      status: restaurant.status
+    });
+
     if (!restaurant.isApproved) {
+      console.log('🔍 [Backend] Restaurant not approved, cannot toggle');
       return res.status(400).json({
         success: false,
         message: 'Cannot toggle status of unapproved restaurant'
       });
     }
 
+    const oldStatus = restaurant.isActive;
     restaurant.isActive = !restaurant.isActive;
     await restaurant.save();
+
+    console.log('🔍 [Backend] Toggle successful:', {
+      oldStatus,
+      newStatus: restaurant.isActive
+    });
 
     res.status(200).json({
       success: true,

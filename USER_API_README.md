@@ -5,7 +5,7 @@ The User API provides authentication, profile management, and user-related funct
 
 ## Base URL
 ```
-http://localhost:3001/api/user
+https://api.mangiee.com/api/user
 ```
 
 ## Authentication Flow

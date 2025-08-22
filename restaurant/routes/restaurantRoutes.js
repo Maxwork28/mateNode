@@ -13,7 +13,8 @@ const {
   getDashboard,
   removeMessImage,
   clearMessImages,
-  logout
+  logout,
+  toggleOnlineStatus
 } = require('../controller/restaurantController');
 
 // Import middleware
@@ -61,5 +62,6 @@ router.get('/dashboard', authMiddleware(['restaurant']), getDashboard);
 router.delete('/mess-image/:imageUrl', authMiddleware(['restaurant']), removeMessImage);
 router.delete('/mess-images', authMiddleware(['restaurant']), clearMessImages);
 router.post('/logout', authMiddleware(['restaurant']), logout);
+router.post('/toggle-online', authMiddleware(['restaurant']), toggleOnlineStatus);
 
 module.exports = router;

@@ -169,6 +169,10 @@ const restaurantSchema = new mongoose.Schema({
     type: Boolean,
     default: false // Track if profile is completed
   },
+  isOnline: {
+    type: Boolean,
+    default: false // Track if restaurant is online/offline
+  },
   lastLogin: {
     type: Date,
     default: Date.now
@@ -220,6 +224,7 @@ restaurantSchema.virtual('completeProfile').get(function() {
     isApproved: this.isApproved,
     isVerified: this.isVerified,
     isProfile: this.isProfile,
+    isOnline: this.isOnline,
     lastLogin: this.lastLogin,
     createdAt: this.createdAt
   };
@@ -259,6 +264,12 @@ restaurantSchema.methods.reject = function(adminId, reason) {
   this.isApproved = false;
   this.status = 'rejected';
   this.rejectionReason = reason;
+  return this.save();
+};
+
+// Method to toggle online/offline status
+restaurantSchema.methods.toggleOnlineStatus = function() {
+  this.isOnline = !this.isOnline;
   return this.save();
 };
 

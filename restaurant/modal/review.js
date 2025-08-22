@@ -94,6 +94,27 @@ const reviewSchema = new mongoose.Schema({
     min: [0, 'View count cannot be negative']
   },
 
+  // Review Visibility & Moderation
+  isVisible: {
+    type: Boolean,
+    default: true
+  },
+  isFlagged: {
+    type: Boolean,
+    default: false
+  },
+  flagReason: {
+    type: String,
+    trim: true
+  },
+  flaggedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  flaggedAt: {
+    type: Date
+  },
+
   // Review Tags
   tags: [{
     type: String,
@@ -131,6 +152,9 @@ reviewSchema.index({ restaurant: 1, rating: -1 });
 reviewSchema.index({ restaurant: 1, reviewDate: -1 });
 reviewSchema.index({ customer: 1, reviewDate: -1 });
 reviewSchema.index({ order: 1 });
+reviewSchema.index({ isVisible: 1 });
+reviewSchema.index({ isFlagged: 1 });
+reviewSchema.index({ restaurant: 1, isVisible: 1 });
 
 // Virtual for complete review info
 reviewSchema.virtual('completeInfo').get(function() {
@@ -152,6 +176,11 @@ reviewSchema.virtual('completeInfo').get(function() {
     unhelpfulCount: this.unhelpfulCount,
     reportCount: this.reportCount,
     viewCount: this.viewCount,
+    isVisible: this.isVisible,
+    isFlagged: this.isFlagged,
+    flagReason: this.flagReason,
+    flaggedBy: this.flaggedBy,
+    flaggedAt: this.flaggedAt,
     tags: this.tags,
     sentiment: this.sentiment,
     sentimentScore: this.sentimentScore,
@@ -235,6 +264,30 @@ reviewSchema.methods.calculateSentimentScore = function() {
     this.sentimentScore = -1.0;
     this.sentiment = 'negative';
   }
+  return this.save();
+};
+
+// Method to toggle review visibility
+reviewSchema.methods.toggleVisibility = function() {
+  this.isVisible = !this.isVisible;
+  return this.save();
+};
+
+// Method to flag review
+reviewSchema.methods.flagReview = function(reason, flaggedBy) {
+  this.isFlagged = true;
+  this.flagReason = reason;
+  this.flaggedBy = flaggedBy;
+  this.flaggedAt = new Date();
+  return this.save();
+};
+
+// Method to unflag review
+reviewSchema.methods.unflagReview = function() {
+  this.isFlagged = false;
+  this.flagReason = undefined;
+  this.flaggedBy = undefined;
+  this.flaggedAt = undefined;
   return this.save();
 };
 

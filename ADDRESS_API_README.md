@@ -2,7 +2,7 @@
 
 ## Base URL
 ```
-http://localhost:3001/api/user
+https://api.mangiee.com/api/user
 ```
 
 ## Authentication
@@ -284,14 +284,14 @@ const newAddress = await fetch('/api/user/addresses', {
 ```bash
 # Get all addresses
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:3001/api/user/addresses
+  https://api.mangiee.com/api/user/addresses
 
 # Add new address
 curl -X POST \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"type":"home","fullAddress":"123 Test St","city":"Test City","pincode":"123456"}' \
-  http://localhost:3001/api/user/addresses
+  https://api.mangiee.com/api/user/addresses
 ```
 
 ## Notes

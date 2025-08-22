@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "seed": "node scripts/seed.js",
     "add-demo-admin": "node scripts/addDemoAdmin.js",
     "fix-existing-admins": "node scripts/fixExistingAdmins.js",
     "add-demo-plans": "node scripts/addDemoPlans.js",

@@ -5,7 +5,7 @@ The Order API provides comprehensive order management functionality for the Maat
 
 ## Base URL
 ```
-http://localhost:3001/api/orders
+https://api.mangiee.com/api/orders
 ```
 
 ## Authentication
@@ -427,7 +427,7 @@ const getUserOrders = async (userId, status = null) => {
 ### cURL Examples
 ```bash
 # Create order from cart
-curl -X POST http://localhost:3001/api/orders/create-from-cart \
+curl -X POST https://api.mangiee.com/api/orders/create-from-cart \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{
@@ -443,10 +443,10 @@ curl -X POST http://localhost:3001/api/orders/create-from-cart \
 
 # Get all orders
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:3001/api/orders?page=1&limit=10&status=pending"
+  "https://api.mangiee.com/api/orders?page=1&limit=10&status=pending"
 
 # Update order status
-curl -X PATCH http://localhost:3001/api/orders/64f1a2b3c4d5e6f7a8b9c0d3/status \
+curl -X PATCH https://api.mangiee.com/api/orders/64f1a2b3c4d5e6f7a8b9c0d3/status \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{"status": "confirmed"}'

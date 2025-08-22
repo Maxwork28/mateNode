@@ -23,11 +23,11 @@ router.get('/', authMiddleware(['admin']), (req, res, next) => {
   next();
 }, orderController.getAllOrders);
 
-// Get order by ID (User, Restaurant, Admin)
-router.get('/:orderId', authMiddleware(['user', 'restaurant', 'admin']), (req, res, next) => {
-  console.log('📦 [ORDER_ROUTES] GET /:orderId - getOrderById route called, ID:', req.params.orderId);
+// Get orders for authenticated restaurant (current user) - MUST come BEFORE /:orderId route
+router.get('/restaurant', authMiddleware(['restaurant']), (req, res, next) => {
+  console.log('📦 [ORDER_ROUTES] GET /restaurant - getOrdersForCurrentRestaurant route called');
   next();
-}, orderController.getOrderById);
+}, orderController.getOrdersForCurrentRestaurant);
 
 // Get orders by customer ID (User can see their own, Admin can see all)
 router.get('/customer/:customerId', authMiddleware(['user', 'admin']), (req, res, next) => {
@@ -40,6 +40,12 @@ router.get('/restaurant/:restaurantId', authMiddleware(['restaurant', 'admin']),
   console.log('📦 [ORDER_ROUTES] GET /restaurant/:restaurantId - getOrdersByRestaurant route called, Restaurant ID:', req.params.restaurantId);
   next();
 }, orderController.getOrdersByRestaurant);
+
+// Get order by ID (User, Restaurant, Admin)
+router.get('/:orderId', authMiddleware(['user', 'restaurant', 'admin']), (req, res, next) => {
+  console.log('📦 [ORDER_ROUTES] GET /:orderId - getOrderById route called, ID:', req.params.orderId);
+  next();
+}, orderController.getOrderById);
 
 // Update order status (Restaurant, Admin)
 router.patch('/:orderId/status', authMiddleware(['restaurant', 'admin']), (req, res, next) => {

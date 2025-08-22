@@ -78,12 +78,14 @@ const createOrderFromCart = async (req, res) => {
     }
     
     console.log('📦 [ORDER_CONTROLLER] User and restaurant found:', {
-      userName: user.firstName + ' ' + user.lastName,
-      restaurantName: restaurant.businessName || restaurant.firstName + ' ' + restaurant.lastName
+      userName: `${firstName} ${lastName}`.trim(),
+      restaurantName: restaurant.businessName || `${resFirstName} ${resLastName}`.trim()
     });
     
     // Validate restaurant name
-    const restaurantName = restaurant.businessName || `${restaurant.firstName} ${restaurant.lastName}`.trim();
+    const resFirstName = restaurant.firstName || '';
+    const resLastName = restaurant.lastName || '';
+    const restaurantName = restaurant.businessName || `${resFirstName} ${resLastName}`.trim();
     if (!restaurantName || restaurantName === '') {
       return res.status(400).json({
         success: false,
@@ -92,7 +94,9 @@ const createOrderFromCart = async (req, res) => {
     }
     
     // Validate user name
-    const customerName = `${user.firstName} ${user.lastName}`.trim() || user.email || 'Unknown Customer';
+    const firstName = user.firstName || '';
+    const lastName = user.lastName || '';
+    const customerName = `${firstName} ${lastName}`.trim() || user.email || 'Unknown Customer';
     if (!customerName || customerName === '') {
       return res.status(400).json({
         success: false,
@@ -501,6 +505,68 @@ const getOrdersByRestaurant = async (req, res) => {
   }
 };
 
+// Get orders for authenticated restaurant (current user)
+const getOrdersForCurrentRestaurant = async (req, res) => {
+  try {
+    console.log('📦 [ORDER_CONTROLLER] Getting orders for current restaurant:', req.user.id);
+    
+    const { status, page = 1, limit = 10 } = req.query;
+    
+    // Build filter - use the authenticated restaurant's ID
+    const filter = { restaurant: req.user.id };
+    
+    // Only add status filter if it's provided AND not empty
+    if (status && status.trim() !== '') {
+      filter.status = status;
+          console.log('📦 [ORDER_CONTROLLER] Applied status filter:', status);
+  } else {
+    console.log('📦 [ORDER_CONTROLLER] No status filter applied, showing all orders');
+  }
+  
+  console.log('📦 [ORDER_CONTROLLER] Final filter:', JSON.stringify(filter, null, 2));
+    
+    // Calculate skip value for pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Execute query
+    const orders = await Order.find(filter)
+      .populate('customer', 'firstName lastName email phone')
+      .sort({ orderDate: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    // Get total count
+    const totalOrders = await Order.countDocuments(filter);
+    const totalPages = Math.ceil(totalOrders / parseInt(limit));
+    
+    console.log('📦 [ORDER_CONTROLLER] Orders found:', orders.length);
+    console.log('📦 [ORDER_CONTROLLER] Total orders for restaurant:', totalOrders);
+    
+    res.status(200).json({
+      success: true,
+      message: 'Restaurant orders retrieved successfully',
+      data: {
+        orders,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalOrders,
+          hasNextPage: parseInt(page) < totalPages,
+          hasPrevPage: parseInt(page) > 1
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('📦 [ORDER_CONTROLLER] Error getting current restaurant orders:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+};
+
 // Update order status
 const updateOrderStatus = async (req, res) => {
   try {
@@ -647,12 +713,18 @@ const getOrderStats = async (req, res) => {
   try {
     console.log('📦 [ORDER_CONTROLLER] Getting order statistics');
     
-    const { customerId, restaurantId, startDate, endDate } = req.query;
+    const { customerId, startDate, endDate } = req.query;
     
-    // Build filter
+    // Build filter - for restaurants, only show their own stats
     const filter = {};
     if (customerId) filter.customer = customerId;
-    if (restaurantId) filter.restaurant = restaurantId;
+    
+    // If user is a restaurant, filter by their ID
+    if (req.user && req.user.role === 'restaurant') {
+      filter.restaurant = req.user.id;
+      console.log('📦 [ORDER_CONTROLLER] Filtering stats for restaurant:', req.user.id);
+    }
+    
     if (startDate || endDate) {
       filter.orderDate = {};
       if (startDate) filter.orderDate.$gte = new Date(startDate);
@@ -733,6 +805,7 @@ module.exports = {
   getOrderById,
   getOrdersByCustomer,
   getOrdersByRestaurant,
+  getOrdersForCurrentRestaurant,
   updateOrderStatus,
   cancelOrder,
   deleteOrder,

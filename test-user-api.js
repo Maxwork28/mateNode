@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:3001/api/user';
+const BASE_URL = 'https://api.mangiee.com/api/user';
 
 // Test data
 const testUser = {

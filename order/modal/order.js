@@ -83,8 +83,9 @@ const orderSchema = new mongoose.Schema({
   },
   restaurantName: {
     type: String,
-     trim: true,
-    maxlength: [100, 'Restaurant name cannot exceed 100 characters'],
+    required: [true, 'Restaurant name is required'],
+    trim: true,
+    maxlength: [100, 'Restaurant name cannot exceed 100 characters']
   },
 
   // Order Items
@@ -93,11 +94,13 @@ const orderSchema = new mongoose.Schema({
   // Pricing Information
   subtotal: {
     type: Number,
-     min: [0, 'Subtotal cannot be negative']
+    required: [true, 'Subtotal is required'],
+    min: [0, 'Subtotal cannot be negative']
   },
   totalAmount: {
     type: Number,
-     min: [0, 'Total amount cannot be negative']
+    required: [true, 'Total amount is required'],
+    min: [0, 'Total amount cannot be negative']
   },
 
   // Delivery Information
