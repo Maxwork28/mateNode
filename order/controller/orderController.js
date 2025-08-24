@@ -77,11 +77,6 @@ const createOrderFromCart = async (req, res) => {
       });
     }
     
-    console.log('📦 [ORDER_CONTROLLER] User and restaurant found:', {
-      userName: `${firstName} ${lastName}`.trim(),
-      restaurantName: restaurant.businessName || `${resFirstName} ${resLastName}`.trim()
-    });
-    
     // Validate restaurant name
     const resFirstName = restaurant.firstName || '';
     const resLastName = restaurant.lastName || '';
@@ -103,6 +98,11 @@ const createOrderFromCart = async (req, res) => {
         message: 'Customer name is missing or invalid'
       });
     }
+    
+    console.log('📦 [ORDER_CONTROLLER] User and restaurant found:', {
+      userName: customerName,
+      restaurantName: restaurantName
+    });
     
     // Generate unique order number
     const orderNumber = Order.generateOrderNumber();

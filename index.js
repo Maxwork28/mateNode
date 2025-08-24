@@ -96,6 +96,7 @@ app.use('/api/admin/drivers', adminDriverRoutes); // Driver management
 app.use('/api/admin/orders', adminOrderRoutes); // Order management
 
 // User routes
+app.use('/api/user/cart', require('./user/routes/cartRoutes')); // Cart routes must come BEFORE general user routes
 app.use('/api/user', userRoutes);
 app.use('/api/user/plans', userPlanRoutes);
 

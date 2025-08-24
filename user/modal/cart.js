@@ -45,7 +45,9 @@ const cartItemSchema = new mongoose.Schema({
 
 // Calculate item total
 cartItemSchema.pre('save', function(next) {
-  this.itemTotal = this.price * this.quantity;
+  if (this.price !== undefined && this.quantity !== undefined) {
+    this.itemTotal = this.price * this.quantity;
+  }
   next();
 });
 
@@ -91,9 +93,16 @@ cartSchema.virtual('itemCount').get(function() {
 cartSchema.methods.calculateTotals = function() {
   console.log('🛒 [CART_MODEL] Calculating totals for cart:', this._id);
   
-  // Calculate subtotal from items
+  // Calculate subtotal from items with safety checks
   this.subtotal = this.items.reduce((sum, item) => {
-    return sum + item.itemTotal;
+    const itemTotal = item.itemTotal || (item.price * item.quantity) || 0;
+    console.log('🛒 [CART_MODEL] Item total calculation:', {
+      itemName: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      itemTotal: itemTotal
+    });
+    return sum + itemTotal;
   }, 0);
   
   // Total is same as subtotal (no delivery fee)
@@ -129,22 +138,30 @@ cartSchema.methods.addItem = function(itemData) {
   if (existingItemIndex !== -1) {
     // Update existing item quantity
     this.items[existingItemIndex].quantity += itemData.quantity;
+    // Recalculate itemTotal for existing item
+    this.items[existingItemIndex].itemTotal = this.items[existingItemIndex].price * this.items[existingItemIndex].quantity;
     console.log('🛒 [CART_MODEL] Updated existing item quantity:', {
       itemName: this.items[existingItemIndex].name,
-      newQuantity: this.items[existingItemIndex].quantity
+      newQuantity: this.items[existingItemIndex].quantity,
+      newItemTotal: this.items[existingItemIndex].itemTotal
     });
   } else {
-    // Add new item
-    this.items.push({
+    // Add new item with calculated itemTotal
+    const newItem = {
       itemId: itemData.itemId,
       name: itemData.name,
       description: itemData.description,
       price: itemData.price,
       quantity: itemData.quantity,
       image: itemData.image,
-      category: itemData.category
+      category: itemData.category,
+      itemTotal: itemData.price * itemData.quantity // Calculate itemTotal here
+    };
+    this.items.push(newItem);
+    console.log('🛒 [CART_MODEL] Added new item to cart:', {
+      name: itemData.name,
+      itemTotal: newItem.itemTotal
     });
-    console.log('🛒 [CART_MODEL] Added new item to cart:', itemData.name);
   }
   
   // Recalculate totals
@@ -173,11 +190,13 @@ cartSchema.methods.updateItemQuantity = function(itemId, newQuantity) {
     this.items.splice(itemIndex, 1);
     console.log('🛒 [CART_MODEL] Removed item from cart');
   } else {
-    // Update quantity
+    // Update quantity and recalculate itemTotal
     this.items[itemIndex].quantity = newQuantity;
+    this.items[itemIndex].itemTotal = this.items[itemIndex].price * newQuantity;
     console.log('🛒 [CART_MODEL] Updated item quantity:', {
       itemName: this.items[itemIndex].name,
-      newQuantity
+      newQuantity,
+      newItemTotal: this.items[itemIndex].itemTotal
     });
   }
   
@@ -211,6 +230,12 @@ cartSchema.statics.findActiveCart = function(userId, restaurantId) {
 // Pre-save middleware to calculate totals
 cartSchema.pre('save', function(next) {
   if (this.isModified('items')) {
+    // Ensure all items have itemTotal calculated
+    this.items.forEach(item => {
+      if (item.price !== undefined && item.quantity !== undefined && !item.itemTotal) {
+        item.itemTotal = item.price * item.quantity;
+      }
+    });
     this.calculateTotals();
   }
   next();
