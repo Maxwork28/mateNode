@@ -1,6 +1,6 @@
-const Category = require('../../restaurant/modal/category');
-const Restaurant = require('../../restaurant/modal/restaurant');
-const Item = require('../../restaurant/modal/item');
+const Category = require('../../../restaurant/modal/category');
+const Restaurant = require('../../../restaurant/modal/restaurant');
+const Item = require('../../../restaurant/modal/item');
 
 // @desc    Get all categories (Admin only)
 // @route   GET /api/admin/categories

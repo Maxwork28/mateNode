@@ -1,4 +1,4 @@
-const Restaurant = require('../../restaurant/modal/restaurant');
+const Restaurant = require('../../../restaurant/modal/restaurant');
 
 // @desc    Get all restaurants (Admin only)
 // @route   GET /api/admin/restaurants

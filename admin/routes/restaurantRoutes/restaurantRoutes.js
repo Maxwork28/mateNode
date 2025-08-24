@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const restaurantController = require('../controller/restaurantController');
-const authMiddleware = require('../../middlewres/auth');
+const restaurantController = require('../../controller/restaurantController/restaurantController');
+const authMiddleware = require('../../../middlewres/auth');
 
 // Restaurant management routes (Admin only)
 router.get('/', authMiddleware(['admin','user']), restaurantController.getAllRestaurants);

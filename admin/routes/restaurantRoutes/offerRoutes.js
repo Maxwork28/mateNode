@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../../middlewres/auth');
+const authMiddleware = require('../../../middlewres/auth');
 const {
   getAllOffers,
   getOfferById,
   toggleOfferStatus,
   getOfferStats
-} = require('../controller/offerController');
+} = require('../../controller/restaurantController/offerController');
 
 // @route   GET /api/admin/offers
 router.get('/', authMiddleware(['admin']), getAllOffers);

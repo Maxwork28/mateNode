@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const orderController = require('../controller/orderController');
-const authMiddleware = require('../../middlewres/auth');
+const orderController = require('../../controller/orderController/orderController');
+const authMiddleware = require('../../../middlewres/auth');
 
 console.log('🚀 [ADMIN_ORDER_ROUTES] Admin order routes initialized');
 

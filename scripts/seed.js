@@ -23,7 +23,7 @@ mongoose.connect('mongodb://localhost:27017/maate').then(() => {
 });
 
 // Sample image URL
-const itemImageUrl = 'https://yoraaecommerce.s3.ap-south-1.amazonaws.com/restaurants/items/1755454348738_item_image.jpg';
+const itemImageUrl = 'https://maatebucket.s3.ap-south-1.amazonaws.com/restaurants/1755880138013_image_1755880055847_0.jpg';
 
 // Generate unique order number
 const generateOrderNumber = () => {

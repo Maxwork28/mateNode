@@ -1,4 +1,4 @@
-const Driver = require('../../driver/modal/driver');
+const Driver = require('../../../driver/modal/driver');
 
 // @desc    Get all drivers (Admin only)
 // @route   GET /api/admin/drivers

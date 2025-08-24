@@ -1,5 +1,5 @@
-const Offer = require('../../restaurant/modal/offer');
-const Restaurant = require('../../restaurant/modal/restaurant');
+const Offer = require('../../../restaurant/modal/offer');
+const Restaurant = require('../../../restaurant/modal/restaurant');
 
 // @desc    Get all offers (Admin only)
 // @route   GET /api/admin/offers

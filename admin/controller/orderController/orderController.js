@@ -1,4 +1,4 @@
-const Order = require('../../order/modal/order');
+const Order = require('../../../order/modal/order');
 const mongoose = require('mongoose');
 
 console.log('🚀 [ADMIN_ORDER_CONTROLLER] Admin order controller initialized');

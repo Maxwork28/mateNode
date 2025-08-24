@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
-const cartRoutes = require('./cartRoutes');
+// const cartRoutes = require('./cartRoutes'); // Temporarily commented out
 const authMiddleware = require('../../middlewres/auth');
 const { uploadSingle, uploadMultiple, handleMulterError } = require('../../utils/multerConfig');
 
@@ -29,7 +29,7 @@ router.put('/addresses/:addressId/default', authMiddleware(['user']), userContro
 router.get('/dashboard', authMiddleware(['user']), userController.getDashboard);
 router.post('/logout', authMiddleware(['user']), userController.logout);
 
-// Cart routes
-router.use('/cart', cartRoutes);
+// Cart routes - temporarily commented out
+// router.use('/cart', cartRoutes);
 
 module.exports = router; 

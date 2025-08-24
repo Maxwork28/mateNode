@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const driverController = require('../controller/driverController');
-const authMiddleware = require('../../middlewres/auth');
+const driverController = require('../../controller/driverController/driverController');
+const authMiddleware = require('../../../middlewres/auth');
 
 // Driver management routes (Admin only)
 router.get('/', authMiddleware(['admin']), driverController.getAllDrivers);

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../../middlewres/auth');
+const authMiddleware = require('../../../middlewres/auth');
 const {
   getAllReviews,
   getReviewById,
   toggleReviewVisibility,
   flagReview,
   getReviewStats
-} = require('../controller/reviewController');
+} = require('../../controller/restaurantController/reviewController');
 
 // @route   GET /api/admin/reviews
 router.get('/', authMiddleware(['admin']), getAllReviews);

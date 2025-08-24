@@ -1,6 +1,6 @@
-const Item = require('../../restaurant/modal/item');
-const Restaurant = require('../../restaurant/modal/restaurant');
-const Category = require('../../restaurant/modal/category');
+const Item = require('../../../restaurant/modal/item');
+const Restaurant = require('../../../restaurant/modal/restaurant');
+const Category = require('../../../restaurant/modal/category');
 
 console.log('🚀 [ITEM_CONTROLLER] Item controller loaded successfully');
 

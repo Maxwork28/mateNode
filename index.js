@@ -19,56 +19,98 @@ app.use(express.urlencoded({ extended: true }));
 const connectDB = require('./config/database');
 
 // Import routes with error handling
-let adminRoutes, userRoutes, restaurantRoutes, driverRoutes, adminRestaurantRoutes, adminUserRoutes, adminDriverRoutes, restaurantItemRoutes, restaurantCategoryRoutes, restaurantPlanRoutes, restaurantOfferRoutes, orderRoutes, userPlanRoutes, adminPlanRoutes, adminOfferRoutes, adminItemRoutes, adminCategoryRoutes, adminReviewRoutes, adminOrderRoutes, reviewRoutes;
+let adminRoutes, adminRestaurantRoutes, adminUserRoutes, adminUserActivityRoutes, adminUserAddressRoutes, adminUserPaymentRoutes, adminUserSubscriptionRoutes, adminUserOrderHistoryRoutes, adminUserProfileRoutes, adminUserReviewRoutes, adminDriverRoutes, adminRestaurantPlanRoutes, adminRestaurantOfferRoutes, adminRestaurantItemRoutes, adminRestaurantCategoryRoutes, adminRestaurantReviewRoutes, adminOrderRoutes, userRoutes, userPlanRoutes, restaurantRoutes, restaurantItemRoutes, restaurantCategoryRoutes, restaurantPlanRoutes, restaurantOfferRoutes, driverRoutes, orderRoutes, reviewRoutes;
 
 try {
+  // Admin routes
   adminRoutes = require('./admin/routes/adminRoutes');
+  adminRestaurantRoutes = require('./admin/routes/restaurantRoutes/restaurantRoutes');
+  
+  // Admin user management routes
+  adminUserRoutes = require('./admin/routes/userRoutes/userRoutes'); // Fixed the problematic routes
+  adminUserActivityRoutes = require('./admin/routes/userRoutes/activityRoutes');
+  adminUserAddressRoutes = require('./admin/routes/userRoutes/addressRoutes');
+  adminUserPaymentRoutes = require('./admin/routes/userRoutes/paymentRoutes');
+  adminUserSubscriptionRoutes = require('./admin/routes/userRoutes/subscriptionRoutes');
+  adminUserOrderHistoryRoutes = require('./admin/routes/userRoutes/orderHistoryRoutes');
+  adminUserProfileRoutes = require('./admin/routes/userRoutes/profileRoutes');
+  adminUserReviewRoutes = require('./admin/routes/userRoutes/reviewRoutes');
+  
+  adminDriverRoutes = require('./admin/routes/driverRoutes/driverRoutes');
+  adminRestaurantPlanRoutes = require('./admin/routes/restaurantRoutes/planRoutes');
+  adminRestaurantOfferRoutes = require('./admin/routes/restaurantRoutes/offerRoutes');
+  adminRestaurantItemRoutes = require('./admin/routes/restaurantRoutes/itemRoutes');
+  adminRestaurantCategoryRoutes = require('./admin/routes/restaurantRoutes/categoryRoutes');
+  adminRestaurantReviewRoutes = require('./admin/routes/restaurantRoutes/reviewRoutes');
+  adminOrderRoutes = require('./admin/routes/orderRoutes/orderRoutes');
+  
+  // User routes
   userRoutes = require('./user/routes/userRoutes');
+  userPlanRoutes = require('./restaurant/routes/userPlanRoutes');
+  
+  // Restaurant routes
   restaurantRoutes = require('./restaurant/routes/restaurantRoutes');
-  driverRoutes = require('./driver/routes/driverRoutes');
-  adminRestaurantRoutes = require('./admin/routes/restaurantRoutes');
-  adminUserRoutes = require('./admin/routes/userRoutes');
-  adminDriverRoutes = require('./admin/routes/driverRoutes');
   restaurantItemRoutes = require('./restaurant/routes/itemRoutes');
   restaurantCategoryRoutes = require('./restaurant/routes/categoryRoutes');
   restaurantPlanRoutes = require('./restaurant/routes/planRoutes');
   restaurantOfferRoutes = require('./restaurant/routes/offerRoutes');
+  
+  // Driver routes
+  driverRoutes = require('./driver/routes/driverRoutes');
+  
+  // Order routes
   orderRoutes = require('./order/routes/orderRoutes');
-  userPlanRoutes = require('./restaurant/routes/userPlanRoutes');
+  
+  // Review routes
   reviewRoutes = require('./restaurant/routes/reviewRoutes');
   
-  // New admin routes
-  adminPlanRoutes = require('./admin/routes/planRoutes');
-  adminOfferRoutes = require('./admin/routes/offerRoutes');
-  adminItemRoutes = require('./admin/routes/itemRoutes');
-  adminCategoryRoutes = require('./admin/routes/categoryRoutes');
-  adminReviewRoutes = require('./admin/routes/reviewRoutes');
-  adminOrderRoutes = require('./admin/routes/orderRoutes');
 } catch (error) {
   console.error('❌ Error loading routes:', error.message);
   process.exit(1);
 }
 
 // Route middleware
-app.use('/api/admin', adminRoutes);
+// Admin routes - organized under /api/admin with logical grouping
+app.use('/api/admin', adminRoutes); // Main admin routes (auth, profile, dashboard)
+
+// Admin restaurant management routes - specific routes must come BEFORE general restaurant routes
+app.use('/api/admin/restaurants/plans', adminRestaurantPlanRoutes); // Restaurant plans management
+app.use('/api/admin/restaurants/offers', adminRestaurantOfferRoutes); // Restaurant offers management
+app.use('/api/admin/restaurants/items', adminRestaurantItemRoutes); // Restaurant items management
+app.use('/api/admin/restaurants/categories', adminRestaurantCategoryRoutes); // Restaurant categories management
+app.use('/api/admin/restaurants/reviews', adminRestaurantReviewRoutes); // Restaurant reviews management
+app.use('/api/admin/restaurants', adminRestaurantRoutes); // Restaurant management - must come LAST
+
+// Admin user management routes - organized under /api/admin/users
+// More specific routes must come BEFORE the general user routes
+app.use('/api/admin/users/activities', adminUserActivityRoutes); // User activities
+app.use('/api/admin/users/addresses', adminUserAddressRoutes); // User addresses
+app.use('/api/admin/users/payments', adminUserPaymentRoutes); // User payments
+app.use('/api/admin/users/subscriptions', adminUserSubscriptionRoutes); // User subscriptions
+app.use('/api/admin/users/orders', adminUserOrderHistoryRoutes); // User order history
+app.use('/api/admin/users/profiles', adminUserProfileRoutes); // User profiles
+app.use('/api/admin/users/reviews', adminUserReviewRoutes); // User reviews
+app.use('/api/admin/users', adminUserRoutes); // Main user management - must come LAST
+
+app.use('/api/admin/drivers', adminDriverRoutes); // Driver management
+app.use('/api/admin/orders', adminOrderRoutes); // Order management
+
+// User routes
 app.use('/api/user', userRoutes);
-app.use('/api/restaurant', restaurantRoutes);
-app.use('/api/driver', driverRoutes);
-app.use('/api/admin/restaurants', adminRestaurantRoutes);
-app.use('/api/admin/users', adminUserRoutes);
-app.use('/api/admin/drivers', adminDriverRoutes);
-app.use('/api/admin/plans', adminPlanRoutes);
-app.use('/api/admin/offers', adminOfferRoutes);
-app.use('/api/admin/items', adminItemRoutes);
-app.use('/api/admin/categories', adminCategoryRoutes);
-app.use('/api/admin/reviews', adminReviewRoutes);
-app.use('/api/admin/orders', adminOrderRoutes);
+app.use('/api/user/plans', userPlanRoutes);
+
+// Restaurant routes
 app.use('/api/restaurant/items', restaurantItemRoutes);
 app.use('/api/restaurant/categories', restaurantCategoryRoutes);
 app.use('/api/restaurant/plans', restaurantPlanRoutes);
 app.use('/api/restaurant/offers', restaurantOfferRoutes);
+app.use('/api/restaurant', restaurantRoutes);
+
+// Driver routes
+app.use('/api/driver', driverRoutes);
+
+// Order and review routes
 app.use('/api/orders', orderRoutes);
-app.use('/api/user/plans', userPlanRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 // Health check route
@@ -86,7 +128,27 @@ app.get('/', (req, res) => {
     message: 'Welcome to Maate API',
     version: '1.0.0',
     endpoints: {
-      admin: '/api/admin',
+      admin: {
+        main: '/api/admin',
+        restaurants: '/api/admin/restaurants',
+        users: {
+          main: '/api/admin/users', // Now working after fixing the routes
+          activities: '/api/admin/users/activities',
+          addresses: '/api/admin/users/addresses',
+          payments: '/api/admin/users/payments',
+          subscriptions: '/api/admin/users/subscriptions',
+          orders: '/api/admin/users/orders',
+          profiles: '/api/admin/users/profiles',
+          reviews: '/api/admin/users/reviews'
+        },
+        drivers: '/api/admin/drivers',
+        orders: '/api/admin/orders',
+        'restaurant-plans': '/api/admin/restaurants/plans',
+        'restaurant-offers': '/api/admin/restaurants/offers',
+        'restaurant-items': '/api/admin/restaurants/items',
+        'restaurant-categories': '/api/admin/restaurants/categories',
+        'restaurant-reviews': '/api/admin/restaurants/reviews'
+      },
       user: '/api/user',
       restaurant: '/api/restaurant',
       driver: '/api/driver',

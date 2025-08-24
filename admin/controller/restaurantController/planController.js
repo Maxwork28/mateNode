@@ -1,5 +1,5 @@
-const Plan = require('../../restaurant/modal/plan');
-const Restaurant = require('../../restaurant/modal/restaurant');
+const Plan = require('../../../restaurant/modal/plan');
+const Restaurant = require('../../../restaurant/modal/restaurant');
 
 // @desc    Get all plans (Admin only)
 // @route   GET /api/admin/plans

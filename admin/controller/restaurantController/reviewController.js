@@ -1,5 +1,5 @@
-const Review = require('../../restaurant/modal/review');
-const Restaurant = require('../../restaurant/modal/restaurant');
+const Review = require('../../../restaurant/modal/review');
+const Restaurant = require('../../../restaurant/modal/restaurant');
 const mongoose = require('mongoose');
 
 // @desc    Get all reviews (Admin only)
